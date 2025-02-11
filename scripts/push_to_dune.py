@@ -36,11 +36,17 @@ for id in query_ids:
         with open(file_path, 'r', encoding='utf-8') as file:
             text = file.read()
 
-            # Update existing file
-            dune.update_query(
-                query.base.query_id, 
-                query_sql=text,
-            )
-            print('SUCCESS: updated query {} to dune'.format(query.base.query_id))
+            try:
+                # Update existing file
+                query_id = str(query.base.query_id)  # Ensure query_id is a string
+                result = dune.update_query(
+                    query_id=query_id,
+                    query_sql=text,
+                    name=query.base.name  # Preserve the original query name
+                )
+                print(f'SUCCESS: updated query {query_id} to dune')
+            except Exception as e:
+                print(f'ERROR updating query {query.base.query_id}: {str(e)}')
+                continue
     else:
-        print('ERROR: file not found, query id {}'.format(query.base.query_id))
+        print(f'ERROR: file not found, query id {query.base.query_id}')
