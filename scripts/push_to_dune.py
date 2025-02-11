@@ -21,6 +21,10 @@ with open(queries_yml, 'r', encoding='utf-8') as file:
 # Extract the query_ids from the data
 query_ids = [id for id in data['query_ids']]
 
+print("Updating", len(query_ids), "queries.")
+
+successed = 0
+
 for id in query_ids:
     query = dune.get_query(id)
     print('PROCESSING: query {}, {}'.format(query.base.query_id, query.base.name))
@@ -45,8 +49,11 @@ for id in query_ids:
                     name=query.base.name  # Preserve the original query name
                 )
                 print(f'SUCCESS: updated query {query_id} to dune')
+                successed += 1
             except Exception as e:
                 print(f'ERROR updating query {query.base.query_id}: {str(e)}')
                 continue
     else:
         print(f'ERROR: file not found, query id {query.base.query_id}')
+
+print("Updated", successed, "of", len(query_ids), "queries.")
